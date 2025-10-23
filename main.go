@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,7 +16,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	// the second parameter is the header value.
 	w.Header().Add("Server", "Go")
 
-	w.Write([]byte("Hello from Snippetbox"))
+	io.WriteString(w, "Hello from Snippetbox")
 }
 
 // Add a snippetView handler function.
@@ -32,13 +33,12 @@ func snippetView(w http.ResponseWriter, r *http.Request) {
 
 	// Use the fmt.Sprintf() function to interpolate the id value with a
 	// message, then write it as the HTTP response.
-	msg := fmt.Sprintf("Display a specific snippet with ID %d...", id)
-	w.Write([]byte(msg))
+	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
 
 // Add a snippetCreate handler function.
 func snippetCreate(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Display a form for creating a new snippet..."))
+	io.WriteString(w, "Display a form for creating a new snippet...")
 }
 
 // Add a snippetCreatePost handler function.
@@ -46,7 +46,7 @@ func snippetCreatePost(w http.ResponseWriter, r *http.Request) {
 	// Use the w.WriteHeader() method to send a 201 status code.
 	w.WriteHeader(http.StatusCreated)
 
-	w.Write([]byte("Save a new snippet..."))
+	io.WriteString(w, "Save a new snippet...")
 }
 
 func main() {
