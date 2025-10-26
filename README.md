@@ -1,5 +1,7 @@
 # Let's Go by Alex Edwards
 
+[![CI](https://github.com/newmancodes/golang-snippetbox/actions/workflows/main.yml/badge.svg)](https://github.com/newmancodes/golang-snippetbox/actions/workflows/main.yml)
+
 Working through [Alex's book](https://lets-go.alexedwards.net/) to develop my knowledge and experience with Golang.
 
 I've done a few experiments in the past but continue to be curious about this language.
