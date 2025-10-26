@@ -13,3 +13,4 @@ I'm using v1.25.2 of Go, so make sure you have that installed from [https://go.d
 ## Notable Deviations
 
 - I've decided to go with PostgreSQL rather than the suggested use of mysql and am using docker to host the database. There is a docker-compose.yml file in the root of this repository, use `docker compose -f ./docker-compose.yml up` to pull the image and kick start the database before running the application
+  - Used [golang-migrate](https://github.com/golang-migrate/migrate) to manage the database schema. Check out the [freecodecamp tutorial](https://www.freecodecamp.org/news/database-migration-golang-migrate/) for more details.

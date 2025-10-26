@@ -3,7 +3,7 @@ services:
     image: postgres:18-alpine
     environment:
       POSTGRES_USER: snippetbox
-      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: snippetbox
     ports:
       - "5432:5432"

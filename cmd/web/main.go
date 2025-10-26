@@ -1,10 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"log/slog"
 	"net/http"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 // Define an application struct to hold the application-wide dependencies for the
@@ -20,18 +23,8 @@ func main() {
 	// flag will be stored in the addr variable at runtime.
 	addr := flag.String("addr", ":4000", "HTTP network address")
 
-	// Use the slog.New() function to initialize a new structured logger, which
-	// writes to the standard out stream and uses the default settings.
-	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		AddSource: true,
-		Level:     slog.LevelInfo,
-	}))
-
-	// Initialize a new instance of our application struct, containing the
-	// dependencies (for now, jsut the structured logger)
-	app := &application{
-		logger: logger,
-	}
+	// Define a new command-line flag for the PostgreSQL DSN string.
+	dsn := flag.String("dsn", "postgres://snippetbox:mypassword@localhost:5432/snippetbox?sslmode=disable", "PostgreSQL data source name")
 
 	// Importantly, we use the flag.Parse() function to parse the command-line flag.
 	// This reads in the command-line flag value and assigns it to the addr
@@ -40,18 +33,64 @@ func main() {
 	// encountered during parsing, the application will be terminated.
 	flag.Parse()
 
+	// Use the slog.New() function to initialize a new structured logger, which
+	// writes to the standard out stream and uses the default settings.
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.LevelInfo,
+	}))
+
+	// To keep the main() function tidy I've put the code for creating a connection
+	// pool into the separate openDB() function below. We pass openDB() the DSN
+	// from the command-line flag.
+	db, err := openDB(*dsn)
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
+	// We also defer a call to db.Close(), so that the connection pool is closed
+	// before the main() function exits.
+	defer db.Close()
+
+	// Initialize a new instance of our application struct, containing the
+	// dependencies (for now, jsut the structured logger)
+	app := &application{
+		logger: logger,
+	}
+
 	// The value returned from the flag.String() function is a pointer to the flag
 	// value, not the value itself. So in this code, that means the addr variable
 	// is actually a pointer, and we need to dereference it (i.e. prefix it with
 	// the * symbol) before using it. Note that we are using the log.Printf()
 	// function to interpolate the address with the log message.
+	// Because the err variable is now already declared in the code above, we need
+	// to use the assignment operator = here, instead of the := 'declare and assign'
+	// operator.
 	logger.Info("starting server", slog.String("addr", *addr))
 
 	// Add we pass the dereferenced addr pointer to http.ListenAndServe() too.
-	err := http.ListenAndServe(*addr, app.routes())
+	err = http.ListenAndServe(*addr, app.routes())
 	// And we also use the Error() method to log any error message returned by
 	// http.ListenAndServe() at Error severity (with no additional attributes),
 	// and then call os.Exit(1) to terminate the application with exit code 1.
 	logger.Error(err.Error())
 	os.Exit(1)
+}
+
+// The openDB() function wraps sql.Open() and returns a sql.DB connection pool
+// for a given DSN.
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	return db, nil
 }
