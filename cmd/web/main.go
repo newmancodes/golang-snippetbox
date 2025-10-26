@@ -7,6 +7,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 )
 
@@ -91,6 +95,23 @@ func openDB(dsn string) (*sql.DB, error) {
 		db.Close()
 		return nil, err
 	}
+
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://database/migration",
+		"postgres",
+		driver)
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	m.Up()
 
 	return db, nil
 }
