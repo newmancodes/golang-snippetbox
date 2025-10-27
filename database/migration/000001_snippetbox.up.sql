@@ -1,6 +1,6 @@
 -- Create a `snippets` table.
 CREATE TABLE snippets (
-    it SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     content TEXT NOT NULL,
     created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
