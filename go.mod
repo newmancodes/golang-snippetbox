@@ -4,6 +4,7 @@ go 1.25.2
 
 require (
 	github.com/golang-migrate/migrate/v4 v4.19.0
+	github.com/justinas/alice v1.2.0
 	github.com/lib/pq v1.10.9
 )
 

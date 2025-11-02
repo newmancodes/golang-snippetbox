@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/justinas/alice"
 )
 
 // Update the signature for the routes() method so that it returns a
@@ -21,8 +23,9 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /snippet/create/{$}", app.snippetCreate)
 	mux.HandleFunc("POST /snippet/create/{$}", app.snippetCreatePost)
 
-	// Pass the servemux as the 'next' parameter to the commonHeaders middleware.
-	// Because commonHeaders is just a function, and the function returns a
-	// http.Handler we don't need to do anything else.
-	return app.recoverPanic(app.logRequest(commonHeaders(mux)))
+	// Create a middleware chain containing our 'standard' middleware
+	// which will be used for every request our application receives.
+	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
+
+	return standard.Then(mux)
 }
