@@ -8,7 +8,7 @@ I've done a few experiments in the past but continue to be curious about this la
 
 ## Getting Started
 
-I'm using v1.25.2 of Go, so make sure you have that installed from [https://go.dev/doc/install](go.dev) then execute `go run ./cmd/web` in your terminal from the root of the repository.
+I'm using v1.25.4 of Go, so make sure you have that installed from [https://go.dev/doc/install](go.dev) then execute `go run ./cmd/web` in your terminal from the root of the repository.
 
 ## Notable Deviations
 
