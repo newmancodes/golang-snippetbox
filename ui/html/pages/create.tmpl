@@ -31,10 +31,10 @@
         <!-- Here we use the `if` action to check if the value of the repopulated
         expires field equals 365. If it does, then we render the `checked`
         attribute so that the radio input is reselected. -->
-        <input type="radio" name="expires" value="365" {{if (eq .Form.Expires 365)}}checked{{end}}>&nbsp;<label for="oneyear">One Year</label>
+        <input type="radio" id="oneyear" name="expires" value="365" {{if (eq .Form.Expires 365)}}checked{{end}}>&nbsp;<label for="oneyear">One Year</label>
         <!-- And we do the same for the other possible values too... -->
-        <input type="radio" name="expires" value="7" {{if (eq .Form.Expires 7)}}checked{{end}}>&nbsp;<label for="oneweek">One Week</label>
-        <input type="radio" name="expires" value="1" {{if (eq .Form.Expires 1)}}checked{{end}}>&nbsp;<label for="oneday">One Day</label>
+        <input type="radio" id="oneweek" name="expires" value="7" {{if (eq .Form.Expires 7)}}checked{{end}}>&nbsp;<label for="oneweek">One Week</label>
+        <input type="radio" id="oneday" name="expires" value="1" {{if (eq .Form.Expires 1)}}checked{{end}}>&nbsp;<label for="oneday">One Day</label>
     </div>
     <div>
         <input type="submit" value="Publish snippet">
