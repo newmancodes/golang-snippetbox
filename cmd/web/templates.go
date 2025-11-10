@@ -30,6 +30,7 @@ type templateData struct {
 	Snippet     models.Snippet
 	Snippets    []models.Snippet
 	Form        any
+	Flash       string // Add a flash field to the templateData struct.
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
