@@ -32,8 +32,8 @@ import (
 // add more to this as development progress.
 type application struct {
 	logger         *slog.Logger
-	snippets       *models.SnippetModel
-	users          *models.UserModel
+	snippets       models.SnippetModelInterface
+	users          models.UserModelInterface
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
@@ -117,6 +117,7 @@ func main() {
 			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
 			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
 		},
+		MinVersion: tls.VersionTLS13,
 	}
 
 	// Initialize a new http.Server struct. We set the Addr and Handler fields so

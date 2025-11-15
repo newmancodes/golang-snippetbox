@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/justinas/nosurf"
 )
 
 func commonHeaders(next http.Handler) http.Handler {
@@ -76,13 +74,15 @@ func (app *application) requireAuthentication(next http.Handler) http.Handler {
 }
 
 func preventCSRF(next http.Handler) http.Handler {
-	csrfHandler := nosurf.New(next)
-	csrfHandler.SetBaseCookie(http.Cookie{
-		HttpOnly: true,
-		Path:     "/",
-		Secure:   true,
-	})
-	return csrfHandler
+	cop := http.NewCrossOriginProtection()
+
+	cop.AddTrustedOrigin("https://foo.example.com")
+	cop.SetDenyHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("CSRF check failed"))
+	}))
+
+	return cop.Handler(next)
 }
 
 func (app *application) authenticate(next http.Handler) http.Handler {
